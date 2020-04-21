@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{E61C8EF1-180
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{7160C04E-1CF1-46D8-BB53-AAD08B52381E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDVMG", "PDVMG\PDVMG.csproj", "{B287B53F-68A2-4756-80B6-5A2EE5888B29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDVMG", "PDVMG\PDVMG.csproj", "{B287B53F-68A2-4756-80B6-5A2EE5888B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

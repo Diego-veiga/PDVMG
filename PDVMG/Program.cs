@@ -7,6 +7,11 @@ using WebApplication2.Services;
 using System.Globalization;
 using WebApplication2.Enum;
 using WebApplication2.Exceptions;
+using Microsoft.Extensions.Options;
+using WebApplication2.DTO;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace PDVMG
 {
@@ -93,34 +98,66 @@ namespace PDVMG
                                             break;
 
                                         case 2:
+
                                             try
                                             {
-                                                Console.WriteLine("Entre com o codigo do produto");
-                                                int codigoProdutoPesquisa = int.Parse(Console.ReadLine());
-                                                ProdutoServices p = new ProdutoServices(optionsBuilder);
-                                                var produtoSelecionado = p.PesquisaProduto(codigoProdutoPesquisa);
-                                                if (produtoSelecionado != null)
-                                                {
-                                                    Console.WriteLine("Produto selecionado: \n" +
-                                                                       "Nome produto:"
-                                                                       + produtoSelecionado.NomeProduto + "\n"
-                                                                       + "Preço produto: R$  "
-                                                                       + produtoSelecionado.PrecoProduto.ToString("F2", CultureInfo.InvariantCulture));
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("Código que voce digitou não existe ");
-                                                }
-                                            }
-                                            catch (FormatException e)
-                                            {
-                                                Console.WriteLine("Você digitou uma letra no lugar do numero ");
-                                            }
-                                            catch (DbException e)
-                                            {
-                                                Console.WriteLine("Algo de errado deu no banco de dados");
-                                            }
 
+                                                Console.WriteLine("Entre com o nome do produto que seja pesquisar");
+                                                string NomeProdutoPesquisa = Console.ReadLine();
+                                                using (var dbContext = new PDVMGContext(optionsBuilder.Options))
+                                                {
+
+                                                    var connection = dbContext.Database.GetDbConnection();
+
+                                                    var Produto = new List<ProdutoDTO>();
+
+                                                    using (var comand = connection.CreateCommand())
+                                                    {
+                                                        connection.Open();
+                                                        
+                                                        comand.CommandText = "PesquisaProduto";
+                                                        comand.CommandType = CommandType.StoredProcedure;
+                                                        SqlParameter parameter = new SqlParameter();
+                                                        parameter.ParameterName = "@NomeProduto";
+                                                        parameter.SqlDbType = SqlDbType.VarChar;
+                                                       
+                                                        parameter.Value = NomeProdutoPesquisa;
+                                                        comand.Parameters.Add(parameter);
+
+                                                        using (var DataReader = comand.ExecuteReader())
+                                                        {
+                                                            if (DataReader.HasRows)
+                                                            {
+                                                                while (DataReader.Read())
+                                                                {
+                                                                    var ProdutoDTO = new ProdutoDTO();
+                                                                    ProdutoDTO.Nome = DataReader["NomeProduto"].ToString();
+                                                                    ProdutoDTO.PreçoProduto = (double)DataReader["PrecoProduto"];
+                                                                    ProdutoDTO.Ativo = (bool)DataReader["Ativo"];
+                                                                    Produto.Add(ProdutoDTO);
+
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    foreach(var i in Produto)
+                                                    {
+                                                        Console.WriteLine("Nome Produto: " + i.Nome + "\n"+
+                                                                         "Preço Produto: " + i.PreçoProduto + "\n" +
+                                                                          "Ativo: " + i.Ativo);
+                                                    }
+
+
+
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine(ex.Message);
+
+                                            }
 
                                             break;
                                         case 3:
@@ -337,14 +374,15 @@ namespace PDVMG
                                             Console.WriteLine("Entre com a forma de pagamento ");
                                             string NomeExcluir;
                                             NomeExcluir = Console.ReadLine();
-                                            FormasPagamentoService formasPagamentoService = new FormasPagamentoService(optionsBuilder);
-                                            FormaPagamento forma = formasPagamentoService.ProcuraForma(NomeExcluir);
-                                            if (forma == null)
+                                            FormasPagamentoService formasPagamentoServiceExclui = new FormasPagamentoService(optionsBuilder);
+                                            FormaPagamento formaExclui = formasPagamentoServiceExclui.ProcuraForma(NomeExcluir);
+                                            if (formaExclui == null)
                                             {
                                                 Console.WriteLine("Forma de pagamento não cadastrada");
-                                            }else
+                                            }
+                                            else
                                             {
-                                                formasPagamentoService.EscluirFormaPagamento(forma);
+                                                formasPagamentoServiceExclui.EscluirFormaPagamento(formaExclui);
 
 
                                             }
@@ -366,7 +404,7 @@ namespace PDVMG
                                         }
                                         else
                                         {
-                                            
+
                                         }
 
                                         break;
