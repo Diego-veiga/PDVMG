@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "PDVMG": "Server=localhost;Database=PDVMG;Trusted_Connection=True;MultipleActiveResultSets=true"
+  }
+}
