@@ -105,21 +105,21 @@ namespace PDVMG
                                                 Console.WriteLine("Entre com o nome do produto que seja pesquisar");
                                                 string NomeProdutoPesquisa = Console.ReadLine();
                                                 ProdutoServices p = new ProdutoServices(optionsBuilder);
-                                               List<ProdutoDTO> produtoDTO = p.PesquisaProduto(NomeProdutoPesquisa);
+                                                List<ProdutoDTO> produtoDTO = p.PesquisaProduto(NomeProdutoPesquisa);
 
 
 
                                                 foreach (var i in produtoDTO)
-                                                    {
-                                                        Console.WriteLine("Nome Produto: " + i.Nome + "\n"+
-                                                                         "Preço Produto: " + i.PreçoProduto + "\n" +
-                                                                          "Ativo: " + i.Ativo);
-                                                    }
-
-
-
+                                                {
+                                                    Console.WriteLine("Nome Produto: " + i.Nome + "\n" +
+                                                                     "Preço Produto: " + i.PreçoProduto + "\n" +
+                                                                      "Ativo: " + i.Ativo);
                                                 }
-                                            
+
+
+
+                                            }
+
                                             catch (Exception ex)
                                             {
                                                 Console.WriteLine(ex.Message);
@@ -192,8 +192,6 @@ namespace PDVMG
 
                             }
 
-
-
                             break;
 
                         case 2:
@@ -251,6 +249,34 @@ namespace PDVMG
                                             v.GravaVenda(venda);
                                             Console.WriteLine("Venda realizada com sucesso");
 
+
+                                            break;
+                                        case 2:
+                                            try
+                                            {
+                                                Console.WriteLine("Entre com o id da venda:");
+                                                int IdVendaCancela = int.Parse(Console.ReadLine());
+                                                VendaService vs = new VendaService(optionsBuilder);
+                                                var vendaCancela = vs.VerificaVendaCancelada(IdVendaCancela);
+                                                if (vendaCancela == null)
+                                                {
+                                                    Console.WriteLine("O id que você digitou não existe ou esta venda ja esta cancelada");
+
+                                                }
+                                                else
+                                                {
+                                                    vs.CancelaVenda(vendaCancela);
+                                                }
+                                            }catch(FormatException e)
+                                            {
+                                                Console.WriteLine("O id da venda de ser um numero");
+                                            }catch(DbException e)
+                                            {
+                                                Console.WriteLine("Não foi possivel verificar no banco de dados");
+                                            }catch(Exception e)
+                                            {
+                                                Console.WriteLine("Algo de errado ocorreu ");
+                                            }
 
                                             break;
                                     }

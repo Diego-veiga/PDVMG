@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication2.Enum
 {
-    public enum StatusVenda
+    public enum StatusVenda: int
     {
         Iniciada=1,
         Cancelada=2,
