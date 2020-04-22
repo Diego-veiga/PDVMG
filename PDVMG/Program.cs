@@ -279,6 +279,16 @@ namespace PDVMG
                                             }
 
                                             break;
+                                        case 3:
+                                            Console.WriteLine("Entre com o id da venda ");
+                                            int idVendaConsulta = int.Parse(Console.ReadLine());
+                                            VendaService vsc = new VendaService(optionsBuilder);
+                                            var VendaConsulta = vsc.PesquisaVenda(idVendaConsulta);
+                                            Console.WriteLine("IdVenda :" + VendaConsulta.IdVenda + "\n" +
+                                                              "Data Venda: "+VendaConsulta.DataVenda+"\n"+
+                                                              "Valor Total: "+ VendaConsulta.ValorTotal+"\n"+
+                                                              "Status venda: "+VendaConsulta.StatusVenda);
+                                            break;
                                     }
                                 }
 
