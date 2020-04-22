@@ -104,45 +104,12 @@ namespace PDVMG
 
                                                 Console.WriteLine("Entre com o nome do produto que seja pesquisar");
                                                 string NomeProdutoPesquisa = Console.ReadLine();
-                                                using (var dbContext = new PDVMGContext(optionsBuilder.Options))
-                                                {
+                                                ProdutoServices p = new ProdutoServices(optionsBuilder);
+                                               List<ProdutoDTO> produtoDTO = p.PesquisaProduto(NomeProdutoPesquisa);
 
-                                                    var connection = dbContext.Database.GetDbConnection();
 
-                                                    var Produto = new List<ProdutoDTO>();
 
-                                                    using (var comand = connection.CreateCommand())
-                                                    {
-                                                        connection.Open();
-                                                        
-                                                        comand.CommandText = "PesquisaProduto";
-                                                        comand.CommandType = CommandType.StoredProcedure;
-                                                        SqlParameter parameter = new SqlParameter();
-                                                        parameter.ParameterName = "@NomeProduto";
-                                                        parameter.SqlDbType = SqlDbType.VarChar;
-                                                       
-                                                        parameter.Value = NomeProdutoPesquisa;
-                                                        comand.Parameters.Add(parameter);
-
-                                                        using (var DataReader = comand.ExecuteReader())
-                                                        {
-                                                            if (DataReader.HasRows)
-                                                            {
-                                                                while (DataReader.Read())
-                                                                {
-                                                                    var ProdutoDTO = new ProdutoDTO();
-                                                                    ProdutoDTO.Nome = DataReader["NomeProduto"].ToString();
-                                                                    ProdutoDTO.PreçoProduto = (double)DataReader["PrecoProduto"];
-                                                                    ProdutoDTO.Ativo = (bool)DataReader["Ativo"];
-                                                                    Produto.Add(ProdutoDTO);
-
-                                                                }
-                                                            }
-                                                        }
-
-                                                    }
-
-                                                    foreach(var i in Produto)
+                                                foreach (var i in produtoDTO)
                                                     {
                                                         Console.WriteLine("Nome Produto: " + i.Nome + "\n"+
                                                                          "Preço Produto: " + i.PreçoProduto + "\n" +
@@ -152,7 +119,7 @@ namespace PDVMG
 
 
                                                 }
-                                            }
+                                            
                                             catch (Exception ex)
                                             {
                                                 Console.WriteLine(ex.Message);
@@ -185,7 +152,7 @@ namespace PDVMG
                                                 Console.WriteLine("entre com o código do produto que deseja alterar:");
                                                 int codigoPro = int.Parse(Console.ReadLine());
                                                 ProdutoServices prod = new ProdutoServices(optionsBuilder);
-                                                var produt = prod.PesquisaProduto(codigoPro);
+                                                var produt = prod.PesquisaProdutoPorCodigo(codigoPro);
                                                 if (produt == null)
                                                 {
                                                     Console.WriteLine("O codigo de produto que você digitou não existe");
@@ -255,7 +222,7 @@ namespace PDVMG
                                                 ProdutoServices ProdutoVenda = new ProdutoServices(optionsBuilder);
                                                 ItemVendaService itv = new ItemVendaService(optionsBuilder);
 
-                                                var p = ProdutoVenda.PesquisaProduto(PVenda);
+                                                var p = ProdutoVenda.PesquisaProdutoPorCodigo(PVenda);
                                                 if (p == null)
                                                 {
                                                     Console.WriteLine("Produto digitado não existe");
