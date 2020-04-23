@@ -13,7 +13,8 @@ namespace WebApplication2.Model
         public double ValorTotalVenda { get; private set; }
         public virtual ICollection<ItemVenda> Items { get; set; } = new List<ItemVenda>();
         public StatusVenda StatusVenda { get; set; }
-        public virtual ICollection<PagamentoVenda> PagamentoVenda { get; set; }
+        public virtual ICollection<PagamentoVenda> PagamentoVenda { get; set; } = new List<PagamentoVenda>();
+        public double Troco { get; set; }
 
         public Venda()
         {
@@ -62,6 +63,10 @@ namespace WebApplication2.Model
             return ValorTotalVenda;
 
 
+        }
+        public void AdicionaFormaPagamento(PagamentoVenda f)
+        {
+            PagamentoVenda.Add(f);
         }
     }
 }

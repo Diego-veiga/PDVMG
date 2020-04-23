@@ -37,5 +37,14 @@ namespace WebApplication2.Services
             contextPagamento.SaveChanges();
             Console.WriteLine("Forma de pagamento Excluída com sucesso");
         }
+        public IEnumerable<FormaPagamento> RetornaTodasFormas()
+        {
+            return contextPagamento.FormaPagamentos.Where(f => f.Ativo == true);
+          
+        }
+        public FormaPagamento ProcuraFormaCodigo(int codigoForma)
+        {
+            return contextPagamento.FormaPagamentos.FirstOrDefault(pg => pg.IdPagamento == codigoForma);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace WebApplication2.Services
 
         public List<ProdutoDTO> PesquisaProduto(string NomeProduto)
         {
-            context.Database.GetDbConnection();
+            
             var connection = context.Database.GetDbConnection();
 
             var Produto = new List<ProdutoDTO>();

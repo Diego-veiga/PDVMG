@@ -218,12 +218,13 @@ namespace PDVMG
                                                 Console.WriteLine("Entre com o codigo do produto");
                                                 int PVenda = int.Parse(Console.ReadLine());
                                                 ProdutoServices ProdutoVenda = new ProdutoServices(optionsBuilder);
-                                                ItemVendaService itv = new ItemVendaService(optionsBuilder);
+
 
                                                 var p = ProdutoVenda.PesquisaProdutoPorCodigo(PVenda);
-                                                if (p == null)
+
+                                                if (p == null || p.Ativo == false)
                                                 {
-                                                    Console.WriteLine("Produto digitado não existe");
+                                                    Console.WriteLine("Produto digitado não existe ou esta desativado ");
 
                                                 }
                                                 else
@@ -243,6 +244,23 @@ namespace PDVMG
                                             }
 
                                             venda.ValorTotal();
+
+                                            Console.WriteLine("Total da venda:" + venda.ValorTotalVenda.ToString("F2", CultureInfo.InvariantCulture));
+                                            Console.WriteLine(" escolha o codigo da forma de pagamento ");
+                                            FormasPagamentoService fg = new FormasPagamentoService(optionsBuilder);
+                                            var Form = fg.RetornaTodasFormas();
+                                            foreach (var i in Form)
+                                            {
+                                                Console.WriteLine("Codigo: " + i.IdPagamento + "  Nome: " + i.NomePagamento);
+                                            }
+                                            int codFormaPagamentoVenda = int.Parse(Console.ReadLine());
+                                            var formaPagamentoVenda = fg.ProcuraFormaCodigo(codFormaPagamentoVenda);
+                                            Console.WriteLine("Forma de pagamento selecionada :" + formaPagamentoVenda.NomePagamento);
+                                            Console.WriteLine("Entre com o valor a ser pago na forma de pagamento selecionada");
+                                            double ValorFormaPagamentoVenda = double.Parse(Console.ReadLine());
+                                            PagamentoVenda pv = new PagamentoVenda(venda,formaPagamentoVenda,ValorFormaPagamentoVenda);
+                                            venda.AdicionaFormaPagamento(pv);
+
                                             venda.StatusVenda = StatusVenda.Finalizada;
 
                                             VendaService v = new VendaService(optionsBuilder);
@@ -267,13 +285,16 @@ namespace PDVMG
                                                 {
                                                     vs.CancelaVenda(vendaCancela);
                                                 }
-                                            }catch(FormatException e)
+                                            }
+                                            catch (FormatException e)
                                             {
                                                 Console.WriteLine("O id da venda de ser um numero");
-                                            }catch(DbException e)
+                                            }
+                                            catch (DbException e)
                                             {
                                                 Console.WriteLine("Não foi possivel verificar no banco de dados");
-                                            }catch(Exception e)
+                                            }
+                                            catch (Exception e)
                                             {
                                                 Console.WriteLine("Algo de errado ocorreu ");
                                             }
@@ -285,9 +306,9 @@ namespace PDVMG
                                             VendaService vsc = new VendaService(optionsBuilder);
                                             var VendaConsulta = vsc.PesquisaVenda(idVendaConsulta);
                                             Console.WriteLine("IdVenda :" + VendaConsulta.IdVenda + "\n" +
-                                                              "Data Venda: "+VendaConsulta.DataVenda+"\n"+
-                                                              "Valor Total: "+ VendaConsulta.ValorTotal+"\n"+
-                                                              "Status venda: "+VendaConsulta.StatusVenda);
+                                                              "Data Venda: " + VendaConsulta.DataVenda + "\n" +
+                                                              "Valor Total: " + VendaConsulta.ValorTotal + "\n" +
+                                                              "Status venda: " + VendaConsulta.StatusVenda);
                                             break;
                                     }
                                 }
