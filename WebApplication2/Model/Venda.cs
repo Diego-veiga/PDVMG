@@ -68,5 +68,9 @@ namespace WebApplication2.Model
         {
             PagamentoVenda.Add(f);
         }
+        public double TotalPagamento()
+        {
+            return PagamentoVenda.Sum(pg => pg.Valor);
+        }
     }
 }

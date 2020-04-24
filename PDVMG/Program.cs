@@ -246,22 +246,29 @@ namespace PDVMG
                                             venda.ValorTotal();
 
                                             Console.WriteLine("Total da venda:" + venda.ValorTotalVenda.ToString("F2", CultureInfo.InvariantCulture));
-                                            Console.WriteLine(" escolha o codigo da forma de pagamento ");
-                                            FormasPagamentoService fg = new FormasPagamentoService(optionsBuilder);
-                                            var Form = fg.RetornaTodasFormas();
-                                            foreach (var i in Form)
+                                            double? ValorFaltante = null;
+                                            while (ValorFaltante != 0)
                                             {
-                                                Console.WriteLine("Codigo: " + i.IdPagamento + "  Nome: " + i.NomePagamento);
+                                                Console.WriteLine(" escolha o codigo da forma de pagamento ");
+                                                FormasPagamentoService fg = new FormasPagamentoService(optionsBuilder);
+                                                var Form = fg.RetornaTodasFormas();
+                                                foreach (var i in Form)
+                                                {
+                                                    Console.WriteLine("Codigo: " + i.IdPagamento + "  Nome: " + i.NomePagamento);
+                                                }
+                                                int codFormaPagamentoVenda = int.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                                                var formaPagamentoVenda = fg.ProcuraFormaCodigo(codFormaPagamentoVenda);
+                                                Console.WriteLine("Forma de pagamento selecionada :" + formaPagamentoVenda.NomePagamento);
+                                                Console.WriteLine("Entre com o valor a ser pago na forma de pagamento selecionada");
+                                                double ValorFormaPagamentoVenda = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                                                PagamentoVenda pv = new PagamentoVenda(venda, formaPagamentoVenda, ValorFormaPagamentoVenda);
+                                                venda.AdicionaFormaPagamento(pv);
+                                                ValorFaltante = venda.ValorTotalVenda - venda.TotalPagamento();
                                             }
-                                            int codFormaPagamentoVenda = int.Parse(Console.ReadLine());
-                                            var formaPagamentoVenda = fg.ProcuraFormaCodigo(codFormaPagamentoVenda);
-                                            Console.WriteLine("Forma de pagamento selecionada :" + formaPagamentoVenda.NomePagamento);
-                                            Console.WriteLine("Entre com o valor a ser pago na forma de pagamento selecionada");
-                                            double ValorFormaPagamentoVenda = double.Parse(Console.ReadLine());
-                                            PagamentoVenda pv = new PagamentoVenda(venda,formaPagamentoVenda,ValorFormaPagamentoVenda);
-                                            venda.AdicionaFormaPagamento(pv);
+
 
                                             venda.StatusVenda = StatusVenda.Finalizada;
+
 
                                             VendaService v = new VendaService(optionsBuilder);
                                             v.GravaVenda(venda);
